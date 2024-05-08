@@ -5,6 +5,7 @@ from car import Car
 from dust import Dust
 from wasd import Wasd
 from dune import Dune
+from rock import Rock
 
 # set up pygame modules
 pygame.init()
@@ -33,7 +34,12 @@ display_message2 = my_font.render(message2, True, (255, 255, 255))
 car = Car(700, 600)
 d = Dust(700, 600)
 wasd = Wasd(800, 400)
-game_map = Dune(25, 100)
+game_map = Dune(0, 0)
+
+rock = Rock(random.randint(0, 1440), -200)
+rock2 = Rock(random.randint(0, 1440), -150)
+rock2.change_size(1.25)
+
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -66,13 +72,24 @@ while run:
     #  ----- NO BLIT ZONE END  ----- #
     screen.fill((0, 0, 0))
     screen.blit(game_map.image, (game_map.x, game_map.y))
+    screen.blit(rock.image, (rock.x, rock.y))
+    screen.blit(rock2.image, (rock2.x, rock2.y))
     if begin is True:
         if going_forward:
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
-        if going_left and going_forward:
+            screen.blit(d.image, (car.x, car.y + 265 + random.randint(0, 20)))
+            rock.move(rock.x, rock.y + 3)
+            rock2.move(rock2.x, rock2.y + 3)
+            if rock.y > 1000:
+                rock.y = -200
+                rock.move(random.randint(0, 1440), rock.y)
+            if rock2.y > 1000:
+                rock2.y = -200
+                rock2.move(random.randint(0, 1440), rock2.y)
+        if going_left and going_forward and car.x > 0:
             car.move(car.x - 3, car.y)
-        if going_right and going_forward:
+        if going_right and going_forward and car.x < 1445:
             car.move(car.x + 3, car.y)
 
     else:
