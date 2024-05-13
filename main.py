@@ -7,6 +7,7 @@ from wasd import Wasd
 from dune import Dune
 from rock import Rock
 from rock2 import Rock2
+from collision import Collision
 
 # set up pygame modules
 pygame.init()
@@ -21,7 +22,7 @@ size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 screen = pygame.display.set_mode(size)
 
 going_forward = False
-going_backward = False
+colliding = False
 going_left = False
 going_right = False
 begin = False
@@ -31,6 +32,7 @@ message2 = "Press 'W' to begin"
 display_message = my_font.render(message, True, (255, 255, 255))
 my_font = pygame.font.SysFont('Comic Sans', 25)
 display_message2 = my_font.render(message2, True, (255, 255, 255))
+health = 100
 
 # Instantiate the images
 car = Car(700, 600)
@@ -46,8 +48,9 @@ rock2 = Rock(random.randint(0, 1440), -250 - random.randint(-75, 75))
 rock3 = Rock2(random.randint(0, 1440), -250)
 rock4 = Rock2(random.randint(0, 1440), -250 - random.randint(0, 300))
 
-rock2.change_size(1.25)
+collision = Collision(car.x, car.y)
 
+rock2.change_size(1.25)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 run = True
@@ -70,10 +73,21 @@ while run:
         going_right = True
     else:
         going_right = False
-    if keys[pygame.K_s]:
-        going_backward = True
-    else:
-        going_backward = False
+
+    colliding = False
+
+    if car.rect.colliderect(rock.rect):
+        colliding = True
+        health -= 7
+    elif car.rect.colliderect(rock2.rect):
+        colliding = True
+        health -= 7
+    elif car.rect.colliderect(rock3.rect):
+        colliding = True
+        health -= 7
+    elif car.rect.colliderect(rock4.rect):
+        colliding = True
+        health -= 7
 
     # --- Main event loop
     # ----- NO BLIT ZONE START ----- #
@@ -86,24 +100,26 @@ while run:
     screen.blit(game_map.image, (game_map.x, game_map.y))
     screen.blit(rock.image, (rock.x, rock.y))
     screen.blit(rock2.image, (rock2.x, rock2.y))
-    screen.blit(rock2.image, (rock2.x - rand_shift, rock2.y + 300))
     screen.blit(rock3.image, (rock3.x, rock3.y))
     screen.blit(rock4.image, (rock4.x, rock4.y))
-    screen.blit(rock4.image, (rock4.x + rand_shift2, rock4.y - 200))
+    screen.blit(car.image, (car.x, car.y))
+    if colliding:
+        screen.blit(collision.image, (car.x - 90, car.y - 100))
+
     if begin is True:
         if going_forward:
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x, car.y + 265 + random.randint(0, 20)))
-            rock.move(rock.x, rock.y + 3)
-            rock2.move(rock2.x, rock2.y + 3)
-            rock3.move(rock3.x, rock3.y + 3)
-            rock4.move(rock4.x, rock4.y + 3)
+            rock.move(rock.x, rock.y + 4)
+            rock2.move(rock2.x, rock2.y + 4)
+            rock3.move(rock3.x, rock3.y + 4)
+            rock4.move(rock4.x, rock4.y + 4)
             if rock.y > 1500:
                 rock = Rock(random.randint(0, 1440), -250)
                 rock.change_size(random.randint(int(0.8), int(1.45)))
             if rock2.y > 1500:
-                rock2 = Rock(random.randint(0, 1440), -650 - random.randint(-75, 75))
+                rock2 = Rock(random.randint(0, 1440), -650 - random.randint(-50, 50))
                 rock2.change_size(random.randint(int(0.8), int(1.45)))
             if rock3.y > 1500:
                 rock3 = Rock2(random.randint(0, 1440), -250)
@@ -115,18 +131,12 @@ while run:
             car.move(car.x - 3, car.y)
         if going_right and going_forward and car.x < 1445:
             car.move(car.x + 3, car.y)
-        if going_backward:
-            rock.move(rock.x, rock.y - 3)
-            rock2.move(rock2.x, rock2.y - 3)
-            rock3.move(rock3.x, rock3.y - 3)
-            rock4.move(rock4.x, rock4.y - 3)
+
 
     else:
         screen.blit(display_message, (635, 160))
         screen.blit(display_message2, (1200, 425))
         screen.blit(wasd.image, (1000, 350))
-
-    screen.blit(car.image, (car.x, car.y))
 
     pygame.display.update()
     # END OF WHILE LOOP
