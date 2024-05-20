@@ -22,6 +22,8 @@ SCREEN_WIDTH = 1600
 size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 screen = pygame.display.set_mode(size)
 
+hit_time = time.time()
+
 going_forward = False
 colliding = False
 set_back = False
@@ -58,7 +60,10 @@ rock2.change_size(1.25)
 run = True
 
 # -------- Main Program Loop -----------
+clock = pygame.time.Clock()
 while run:
+    clock.tick(90)
+    # print(health)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         begin = True
@@ -83,6 +88,7 @@ while run:
         hit_time = time.time()
         colliding = True
         set_back = True
+        going_forward = True
     elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
         colliding = False
 
@@ -105,26 +111,26 @@ while run:
         screen.blit(collision.image, (car.x + rand_shift3, car.y + rand_shift4))
 
     updated_time = time.time()
-    if colliding:
-        if (updated_time - hit_time) > 2:
+    if colliding is False:
+        if (hit_time - updated_time) < -0.25:
             set_back = False
     if set_back is True:
-        rock.move(rock.x, rock.y - 1)
-        rock2.move(rock2.x, rock2.y - 1)
-        rock3.move(rock3.x, rock3.y - 1)
-        rock4.move(rock4.x, rock4.y - 1)
+        rock.move(rock.x, rock.y - 14)
+        rock2.move(rock2.x, rock2.y - 14)
+        rock3.move(rock3.x, rock3.y - 14)
+        rock4.move(rock4.x, rock4.y - 14)
 
     if begin is True:
         if going_forward:
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x, car.y + 265 + random.randint(0, 20)))
-            rock.move(rock.x, rock.y + 4)
-            rock2.move(rock2.x, rock2.y + 4)
-            rock3.move(rock3.x, rock3.y + 4)
-            rock4.move(rock4.x, rock4.y + 4)
+            rock.move(rock.x, rock.y + 10)
+            rock2.move(rock2.x, rock2.y + 10)
+            rock3.move(rock3.x, rock3.y + 10)
+            rock4.move(rock4.x, rock4.y + 10)
             if rock.y > 1500:
-                rock = Rock(random.randint(0, 1440), -250)
+                rock = Rock(random.randint(0, 1440), -850)
                 rock.change_size(random.randint(int(0.8), int(1.45)))
             if rock2.y > 1500:
                 rock2 = Rock(random.randint(0, 1440), -650 - random.randint(-50, 50))
@@ -133,12 +139,12 @@ while run:
                 rock3 = Rock2(random.randint(0, 1440), -250)
                 rock2.change_size(random.randint(int(0.8), int(1.45)))
             if rock4.y > 1500:
-                rock4 = Rock2(random.randint(0, 1440), -250 - random.randint(-20, 300))
+                rock4 = Rock2(random.randint(0, 1440), -450 - random.randint(-20, 300))
                 rock4.change_size(random.randint(int(0.8), int(1.45)))
         if going_left and going_forward and car.x > 0:
-            car.move(car.x - 3, car.y)
+            car.move(car.x - 6, car.y)
         if going_right and going_forward and car.x < 1445:
-            car.move(car.x + 3, car.y)
+            car.move(car.x + 6, car.y)
     else:
         screen.blit(display_message, (635, 160))
         screen.blit(display_message2, (1200, 425))
