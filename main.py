@@ -47,9 +47,9 @@ game_map = Dune(0, 0)
 rand_shift = random.randint(-200, 200)
 rand_shift2 = random.randint(-200, 200)
 
-rock = Rock(random.randint(0, 1440), -250)
+rock = Rock(random.randint(0, 1440), -250 - random.randint(0, 300))
 rock2 = Rock(random.randint(0, 1440), -250 - random.randint(-75, 75))
-rock3 = Rock2(random.randint(0, 1440), -250)
+rock3 = Rock2(random.randint(0, 1440), -250 - random.randint(0, 300))
 rock4 = Rock2(random.randint(0, 1440), -250 - random.randint(0, 300))
 
 collision = Collision(car.x, car.y)
@@ -83,7 +83,7 @@ while run:
 
     if (car.rect.colliderect(rock.rect) or car.rect.colliderect(rock2.rect) or car.rect.colliderect(rock3.rect) or car.rect.colliderect(rock4.rect)) and colliding is False:
         rand_shift3 = random.randint(-50, 50)
-        rand_shift4 = random.randint(-25, 240)
+        rand_shift4 = random.randint(-25, 165)
         health -= 7
         hit_time = time.time()
         colliding = True
@@ -129,18 +129,15 @@ while run:
             rock2.move(rock2.x, rock2.y + 10)
             rock3.move(rock3.x, rock3.y + 10)
             rock4.move(rock4.x, rock4.y + 10)
-            if rock.y > 1500:
-                rock = Rock(random.randint(0, 1440), -850)
-                rock.change_size(random.randint(int(0.8), int(1.45)))
-            if rock2.y > 1500:
-                rock2 = Rock(random.randint(0, 1440), -650 - random.randint(-50, 50))
-                rock2.change_size(random.randint(int(0.8), int(1.45)))
-            if rock3.y > 1500:
-                rock3 = Rock2(random.randint(0, 1440), -250)
-                rock2.change_size(random.randint(int(0.8), int(1.45)))
-            if rock4.y > 1500:
-                rock4 = Rock2(random.randint(0, 1440), -450 - random.randint(-20, 300))
-                rock4.change_size(random.randint(int(0.8), int(1.45)))
+            if rock.y > 1600:
+                rock.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
+            if rock2.y > 1600:
+                rock2.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
+            if rock3.y > 1600:
+                rock3.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
+            if rock4.y > 1600:
+                rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
+
         if going_left and going_forward and car.x > 0:
             car.move(car.x - 6, car.y)
         if going_right and going_forward and car.x < 1445:
