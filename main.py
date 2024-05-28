@@ -9,6 +9,8 @@ from dune import Dune
 from rock import Rock
 from rock2 import Rock2
 from collision import Collision
+from health import Health
+from game_over import Gameover
 
 # set up pygame modules
 pygame.init()
@@ -37,12 +39,17 @@ display_message = my_font.render(message, True, (255, 255, 255))
 my_font = pygame.font.SysFont('Comic Sans', 25)
 display_message2 = my_font.render(message2, True, (255, 255, 255))
 health = 100
+end_game = False
 
 # Instantiate the images
 car = Car(700, 600)
 d = Dust(700, 600)
 wasd = Wasd(800, 400)
 game_map = Dune(0, 0)
+game_over = Gameover(0, 0)
+health_bar = Health(0, 800)
+health_pos = 225
+
 
 rand_shift = random.randint(-200, 200)
 rand_shift2 = random.randint(-200, 200)
@@ -85,6 +92,21 @@ while run:
         rand_shift3 = random.randint(-50, 50)
         rand_shift4 = random.randint(-25, 165)
         health -= 7
+        if 10 > health > 5:
+            health_pos = 40
+        elif 5 > health > 0:
+            health_pos = 20
+        elif health < 0:
+            health_pos = 0
+            end_game = True
+        elif 25 > health > 10:
+            health_pos = 85
+        elif 50 > health > 25:
+            health_pos = 130
+        elif 75 > health > 50:
+            health_pos = 180
+        elif 85 > health > 75:
+            health_pos = 200
         hit_time = time.time()
         colliding = True
         set_back = True
@@ -105,6 +127,8 @@ while run:
     screen.blit(rock2.image, (rock2.x, rock2.y))
     screen.blit(rock3.image, (rock3.x, rock3.y))
     screen.blit(rock4.image, (rock4.x, rock4.y))
+    pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(45, 85, health_pos, 35))
+    screen.blit(health_bar.image, (0, 0))
 
     screen.blit(car.image, (car.x, car.y))
     if colliding:
@@ -146,6 +170,8 @@ while run:
         screen.blit(display_message, (635, 160))
         screen.blit(display_message2, (1200, 425))
         screen.blit(wasd.image, (1000, 350))
+    if end_game is True:
+        screen.blit(game_over.image, (0, 0))
 
     pygame.display.update()
     # END OF WHILE LOOP
