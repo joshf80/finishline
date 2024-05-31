@@ -1,13 +1,13 @@
 import pygame
 
-class Car:
+class Blue_car:
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.image = pygame.image.load("car.png")
+        self.image = pygame.image.load("blue_car.png")
         self.image_size = self.image.get_size()
-        scale_size = (self.image_size[0] * .6, self.image_size[1] * .6)
+        scale_size = (self.image_size[0] * .4, self.image_size[1] * .4)
         self.image = pygame.transform.scale(self.image, scale_size)
         self.image_size = self.image.get_size()
 

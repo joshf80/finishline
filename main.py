@@ -3,6 +3,7 @@ import random
 import time
 
 from car import Car
+from blue_car import Blue_car
 from dust import Dust
 from wasd import Wasd
 from dune import Dune
@@ -43,6 +44,7 @@ end_game = False
 
 # Instantiate the images
 car = Car(700, 600)
+bot_car = Blue_car(700, 600)
 d = Dust(700, 600)
 wasd = Wasd(800, 400)
 game_map = Dune(0, 0)
@@ -70,7 +72,6 @@ run = True
 clock = pygame.time.Clock()
 while run:
     clock.tick(90)
-    # print(health)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
         begin = True
@@ -93,17 +94,19 @@ while run:
         rand_shift4 = random.randint(-25, 165)
         health -= 7
         if 10 > health > 5:
-            health_pos = 40
+            health_pos = 65
         elif 5 > health > 0:
-            health_pos = 20
+            health_pos = 33
         elif health < 0:
             health_pos = 0
             end_game = True
         elif 25 > health > 10:
-            health_pos = 85
+            health_pos = 95
         elif 50 > health > 25:
-            health_pos = 130
-        elif 75 > health > 50:
+            health_pos = 120
+        elif 65 > health > 50:
+            health_pos = 150
+        elif 75 > health > 65:
             health_pos = 180
         elif 85 > health > 75:
             health_pos = 200
@@ -130,6 +133,7 @@ while run:
     pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(45, 85, health_pos, 35))
     screen.blit(health_bar.image, (0, 0))
 
+    screen.blit(bot_car.image, (bot_car.x, bot_car.y + 10))
     screen.blit(car.image, (car.x, car.y))
     if colliding:
         screen.blit(collision.image, (car.x + rand_shift3, car.y + rand_shift4))
@@ -146,6 +150,7 @@ while run:
 
     if begin is True:
         if going_forward:
+            bot_car.y += .08
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x, car.y + 265 + random.randint(0, 20)))
@@ -161,6 +166,8 @@ while run:
                 rock3.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
             if rock4.y > 1600:
                 rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
+        else:
+            bot_car.y -= 10
 
         if going_left and going_forward and car.x > 0:
             car.move(car.x - 6, car.y)
