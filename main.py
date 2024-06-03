@@ -39,7 +39,6 @@ message2 = "Press 'W' to begin"
 display_message = my_font.render(message, True, (255, 255, 255))
 my_font = pygame.font.SysFont('Comic Sans', 25)
 display_message2 = my_font.render(message2, True, (255, 255, 255))
-health = 100
 end_game = False
 
 # Instantiate the images
@@ -92,28 +91,12 @@ while run:
     if (car.rect.colliderect(rock.rect) or car.rect.colliderect(rock2.rect) or car.rect.colliderect(rock3.rect) or car.rect.colliderect(rock4.rect)) and colliding is False:
         rand_shift3 = random.randint(-50, 50)
         rand_shift4 = random.randint(-25, 165)
-        health -= 7
-        if 10 > health > 5:
-            health_pos = 65
-        elif 5 > health > 0:
-            health_pos = 33
-        elif health < 0:
-            health_pos = 0
-            end_game = True
-        elif 25 > health > 10:
-            health_pos = 95
-        elif 50 > health > 25:
-            health_pos = 120
-        elif 65 > health > 50:
-            health_pos = 150
-        elif 75 > health > 65:
-            health_pos = 180
-        elif 85 > health > 75:
-            health_pos = 200
+        health_pos -= 5
+
         hit_time = time.time()
         colliding = True
         set_back = True
-        going_forward = True
+        going_forward = False
     elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
         colliding = False
 
@@ -147,10 +130,15 @@ while run:
         rock2.move(rock2.x, rock2.y - 14)
         rock3.move(rock3.x, rock3.y - 14)
         rock4.move(rock4.x, rock4.y - 14)
+        bot_car.y -= 8
 
     if begin is True:
         if going_forward:
-            bot_car.y += .08
+            if bot_car.y < car.y:
+                bot_car.y += .1
+            if bot_car.y > car.y:
+                bot_car.y -= .1
+
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
             screen.blit(d.image, (car.x, car.y + 265 + random.randint(0, 20)))
@@ -168,6 +156,9 @@ while run:
                 rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
         else:
             bot_car.y -= 10
+
+        if bot_car.y < -400:
+            bot_car.y = -300
 
         if going_left and going_forward and car.x > 0:
             car.move(car.x - 6, car.y)
