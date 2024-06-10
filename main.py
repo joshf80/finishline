@@ -26,10 +26,14 @@ size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 screen = pygame.display.set_mode(size)
 
 hit_time = time.time()
+bot_hit_time = time.time()
 
 going_forward = False
+bot_forward = True
 colliding = False
+bot_colliding = False
 set_back = False
+bot_set_back = False
 going_left = False
 going_right = False
 begin = False
@@ -43,7 +47,7 @@ end_game = False
 
 # Instantiate the images
 car = Car(700, 600)
-bot_car = Blue_car(700, 600)
+bot_car = Blue_car(700, 610)
 d = Dust(700, 600)
 wasd = Wasd(800, 400)
 game_map = Dune(0, 0)
@@ -100,6 +104,17 @@ while run:
     elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
         colliding = False
 
+    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and colliding is False:
+        rand_shift3 = random.randint(-50, 50)
+        rand_shift4 = random.randint(-25, 165)
+
+        bot_hit_time = time.time()
+        bot_colliding = True
+        bot_set_back = True
+        bot_forward = False
+    elif not bot_car.rect.colliderect(rock.rect) and not bot_car.rect.colliderect(rock2.rect) and not bot_car.rect.colliderect(rock3.rect) and not bot_car.rect.colliderect(rock4.rect) and bot_colliding is True:
+        bot_colliding = False
+
     # --- Main event loop
     # ----- NO BLIT ZONE START ----- #
     for event in pygame.event.get():  # User did something
@@ -116,7 +131,7 @@ while run:
     pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(45, 85, health_pos, 35))
     screen.blit(health_bar.image, (0, 0))
 
-    screen.blit(bot_car.image, (bot_car.x, bot_car.y + 10))
+    screen.blit(bot_car.image, (bot_car.x, bot_car.y))
     screen.blit(car.image, (car.x, car.y))
     if colliding:
         screen.blit(collision.image, (car.x + rand_shift3, car.y + rand_shift4))
@@ -132,11 +147,18 @@ while run:
         rock4.move(rock4.x, rock4.y - 14)
         bot_car.y -= 8
 
+    if bot_colliding is False:
+        if (bot_hit_time - updated_time) < -0.25:
+            bot_set_back = False
+            bot_forward = True
+    if bot_set_back is True:
+        bot_car.y += 10
+
     if begin is True:
         if going_forward:
-            if bot_car.y < car.y:
+            if bot_car.y < car.y and bot_forward:
                 bot_car.y += .1
-            if bot_car.y > car.y:
+            if bot_car.y > car.y and bot_forward:
                 bot_car.y -= .1
 
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
@@ -154,11 +176,14 @@ while run:
                 rock3.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
             if rock4.y > 1600:
                 rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
-        else:
+        elif bot_forward:
             bot_car.y -= 10
 
         if bot_car.y < -400:
             bot_car.y = -300
+        if bot_car.y > 1400:
+            bot_car.y = 1600
+
 
         if going_left and going_forward and car.x > 0:
             car.move(car.x - 6, car.y)
