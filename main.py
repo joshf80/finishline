@@ -73,7 +73,7 @@ run = True
 
 # -------- Main Program Loop -----------
 clock = pygame.time.Clock()
-while run:
+while run:  
     clock.tick(90)
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -104,10 +104,7 @@ while run:
     elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
         colliding = False
 
-    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and colliding is False:
-        rand_shift3 = random.randint(-50, 50)
-        rand_shift4 = random.randint(-25, 165)
-
+    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and bot_colliding is False:
         bot_hit_time = time.time()
         bot_colliding = True
         bot_set_back = True
@@ -148,11 +145,11 @@ while run:
         bot_car.y -= 8
 
     if bot_colliding is False:
-        if (bot_hit_time - updated_time) < -0.25:
+        if (bot_hit_time - updated_time) < -0.2:
             bot_set_back = False
             bot_forward = True
     if bot_set_back is True:
-        bot_car.y += 10
+        bot_car.y += 15
 
     if begin is True:
         if going_forward:
@@ -176,13 +173,13 @@ while run:
                 rock3.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
             if rock4.y > 1600:
                 rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
-        elif bot_forward:
+        else:
             bot_car.y -= 10
 
         if bot_car.y < -400:
-            bot_car.y = -300
-        if bot_car.y > 1400:
-            bot_car.y = 1600
+            bot_car.y += 20
+        if bot_car.y > 1200:
+            bot_car.y -= 20
 
 
         if going_left and going_forward and car.x > 0:

@@ -10,6 +10,7 @@ class Car:
         scale_size = (self.image_size[0] * .6, self.image_size[1] * .6)
         self.image = pygame.transform.scale(self.image, scale_size)
         self.image_size = self.image.get_size()
+        self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
 
