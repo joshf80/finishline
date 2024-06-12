@@ -7,6 +7,17 @@ from dust import Dust
 from rock import Rock
 from ui import UI
 
+
+def find_gap(input_list):
+    high = 0
+    position = 0
+    for i in range(len(input_list) - 1):
+        if high < input_list[i + 1] - input_list[i]:
+            high = input_list[i + 1] - input_list[i]
+            position = i
+    return position
+
+
 # set up pygame modules
 pygame.init()
 pygame.font.init()
@@ -46,7 +57,7 @@ end_game = False
 
 # Instantiate the images
 car = Car(700, 600, "red")
-bot_car = Car(700, 610, "blue")
+bot_car = Car(random.randint(0, 1440), 610, "blue")
 d = Dust(700, 600)
 wasd = UI(800, 400, "wasd")
 game_map = UI(0, 0, "dune")
@@ -90,6 +101,51 @@ while run:
     else:
         going_right = False
 
+    if begin:
+        if rock.y < 100:
+            coordinates = [0, rock.x, rock2.x, rock3.x, rock4.x, 1600]
+
+            coordinates.sort()
+            position = find_gap(coordinates)
+            if position == 1:
+                if not (-4 < bot_car.x < 287):
+                    bot_car.move(bot_car.x - 8, bot_car.y)
+                elif -4 < bot_car.x < 200:
+                    bot_car.move(bot_car.x + 4, bot_car.y)
+            if position == 2:
+                if not (287 < bot_car.x < 578):
+                    if bot_car.x < 287:
+                        bot_car.move(bot_car.x + 8, bot_car.y)
+                    if bot_car.x > 578:
+                        bot_car.move(bot_car.x - 4, bot_car.y)
+                elif 287 < bot_car.x < 578:
+                    bot_car.move(bot_car.x + 12, bot_car.y)
+            if position == 3:
+                if not (578 < bot_car.x < 869):
+                    if bot_car.x < 578:
+                        bot_car.move(bot_car.x + 8, bot_car.y)
+                    if bot_car.x > 869:
+                        bot_car.move(bot_car.x - 4, bot_car.y)
+                elif 578 < bot_car.x > 869:
+                    bot_car.move(bot_car.x - 8, bot_car.y)
+            if position == 4:
+                if not (869 < bot_car.x < 1160):
+                    if bot_car.x < 869:
+                        bot_car.move(bot_car.x + 8, bot_car.y)
+                    if bot_car.x > 1160:
+                        bot_car.move(bot_car.x - 4, bot_car.y)
+                elif 869 < bot_car.x < 1160:
+                    bot_car.move(bot_car.x - 8, bot_car.y)
+            if position == 5:
+                if not (1160 < bot_car.x < 1452):
+                    if bot_car.x < 1160:
+                        bot_car.move(bot_car.x + 8, bot_car.y)
+                    if bot_car.x > 1452:
+                        bot_car.move(bot_car.x - 4, bot_car.y)
+                elif 1160 < bot_car.x < 1452:
+                    bot_car.move(bot_car.x + 8, bot_car.y)
+
+
     if (car.rect.colliderect(rock.rect) or car.rect.colliderect(rock2.rect) or car.rect.colliderect(rock3.rect) or car.rect.colliderect(rock4.rect)) and colliding is False:
         rand_shift3 = random.randint(-50, 50)
         rand_shift4 = random.randint(-25, 165)
@@ -102,8 +158,7 @@ while run:
     elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
         colliding = False
 
-    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(
-            rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and bot_colliding is False:
+    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and bot_colliding is False:
         bot_hit_time = time.time()
         bot_colliding = True
         bot_set_back = True
@@ -155,12 +210,14 @@ while run:
         bot_car.y += 15
 
     if begin is True:
-        
         if going_forward:
             if bot_car.y < car.y and bot_forward:
-                bot_car.y += .1
+                if bot_car.y + 10 < car.y:
+                    score -= 1
+                    bot_car.y += .1
             if bot_car.y > car.y and bot_forward:
-                score += 1
+                if bot_car.y - 10 > car.y:
+                    score += 1
                 bot_car.y -= .6
 
             screen.blit(d.image, (car.x + 120 + random.randint(0, 20), car.y + 265 + random.randint(0, 20)))
@@ -180,6 +237,7 @@ while run:
                 rock4.move(random.randint(0, 1440), -250 - random.randint(-50, 700))
         else:
             bot_car.y -= 10
+            score -= 1
 
         if bot_car.y < -400:
             bot_car.y += 20
