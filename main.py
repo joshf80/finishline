@@ -102,7 +102,7 @@ while run:
         going_right = False
 
     if begin:
-        if rock.y < 100:
+        if rock.y < 450 and rock2.y < 450 and rock3.y < 450 and rock4.y < 450:
             coordinates = [0, rock.x, rock2.x, rock3.x, rock4.x, 1600]
 
             coordinates.sort()
@@ -145,27 +145,6 @@ while run:
                 elif 1160 < bot_car.x < 1452:
                     bot_car.move(bot_car.x + 8, bot_car.y)
 
-
-    if (car.rect.colliderect(rock.rect) or car.rect.colliderect(rock2.rect) or car.rect.colliderect(rock3.rect) or car.rect.colliderect(rock4.rect)) and colliding is False:
-        rand_shift3 = random.randint(-50, 50)
-        rand_shift4 = random.randint(-25, 165)
-        health_pos -= 15
-
-        hit_time = time.time()
-        colliding = True
-        set_back = True
-        going_forward = False
-    elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
-        colliding = False
-
-    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and bot_colliding is False:
-        bot_hit_time = time.time()
-        bot_colliding = True
-        bot_set_back = True
-        bot_forward = False
-    elif not bot_car.rect.colliderect(rock.rect) and not bot_car.rect.colliderect(rock2.rect) and not bot_car.rect.colliderect(rock3.rect) and not bot_car.rect.colliderect(rock4.rect) and bot_colliding is True:
-        bot_colliding = False
-
     # --- Main event loop
     # ----- NO BLIT ZONE START ----- #
     for event in pygame.event.get():  # User did something
@@ -188,22 +167,44 @@ while run:
 
     screen.blit(bot_car.image, (bot_car.x, bot_car.y))
     screen.blit(car.image, (car.x, car.y))
+
+    if (car.rect.colliderect(rock.rect) or car.rect.colliderect(rock2.rect) or car.rect.colliderect(rock3.rect) or car.rect.colliderect(rock4.rect)) and colliding is False:
+        rand_shift3 = random.randint(-50, 50)
+        rand_shift4 = random.randint(-25, 165)
+        health_pos -= 15
+
+        hit_time = time.time()
+        colliding = True
+        set_back = True
+        going_forward = False
+    elif not car.rect.colliderect(rock.rect) and not car.rect.colliderect(rock2.rect) and not car.rect.colliderect(rock3.rect) and not car.rect.colliderect(rock4.rect) and colliding is True:
+        colliding = False
+
+    if (bot_car.rect.colliderect(rock.rect) or bot_car.rect.colliderect(rock2.rect) or bot_car.rect.colliderect(rock3.rect) or bot_car.rect.colliderect(rock4.rect)) and bot_colliding is False:
+        bot_hit_time = time.time()
+        bot_colliding = True
+        bot_set_back = True
+        bot_forward = False
+    elif not bot_car.rect.colliderect(rock.rect) and not bot_car.rect.colliderect(rock2.rect) and not bot_car.rect.colliderect(rock3.rect) and not bot_car.rect.colliderect(rock4.rect) and bot_colliding is True:
+        bot_colliding = False
+
     if colliding:
         screen.blit(collision.image, (car.x + rand_shift3, car.y + rand_shift4))
 
     updated_time = time.time()
+    bot_updated_time = time.time()
     if colliding is False:
         if (hit_time - updated_time) < -0.25:
             set_back = False
     if set_back is True:
         rock.move(rock.x, rock.y - 14)
-        rock2.move(rock2.x, rock2.y - 14)
+        rock2.move(rock2.x, rock2.y - 14)Ha
         rock3.move(rock3.x, rock3.y - 14)
         rock4.move(rock4.x, rock4.y - 14)
         bot_car.y -= 8
 
     if bot_colliding is False:
-        if (bot_hit_time - updated_time) < -0.2:
+        if (bot_hit_time - bot_updated_time) < -0.2:
             bot_set_back = False
             bot_forward = True
     if bot_set_back is True:
