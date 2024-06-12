@@ -198,7 +198,7 @@ while run:
             set_back = False
     if set_back is True:
         rock.move(rock.x, rock.y - 14)
-        rock2.move(rock2.x, rock2.y - 14)Ha
+        rock2.move(rock2.x, rock2.y - 14)
         rock3.move(rock3.x, rock3.y - 14)
         rock4.move(rock4.x, rock4.y - 14)
         bot_car.y -= 8
